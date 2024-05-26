@@ -1,156 +1,108 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
 
 const SuraqJauap = () => {
-    const [currentLevel, setCurrentLevel] = useState(1);
-    const [titleText, setTitleText] = useState('');
-    const [levelText, setLevelText] = useState('');
-    const [questions, setQuestions] = useState([]);
-    const [userAnswers, setUserAnswers] = useState([]);
-    const [showCorrectAnswers, setShowCorrectAnswers] = useState(false);
-    const [correctAnswerCount, setCorrectAnswerCount] = useState(0);
-    const [answersChecked, setAnswersChecked] = useState(false);
+    const [quizzes, setQuizzes] = useState([]);
+    const [answers, setAnswers] = useState({});
+    const [results, setResults] = useState([]);
+    const [score, setScore] = useState(0);
+    const [showResults, setShowResults] = useState(false);
 
     useEffect(() => {
-        const loadQuestions = async () => {
+        const fetchQuizzes = async () => {
             try {
-                const response = await fetch(`./data_suraqJauap/level${currentLevel}.json`);
-                if (!response.ok) {
-                    throw new Error(`Failed to load questions: ${response.status} ${response.statusText}`);
-                }
-
+                const response = await fetch("http://localhost:8000/suraqjauap");
                 const data = await response.json();
-                setTitleText(data.titleText);
-                setLevelText(data.levelText);
-                setQuestions(data.questions);
-                setUserAnswers(Array(data.questions.length).fill(null));
-
-                setShowCorrectAnswers(false);
-                setCorrectAnswerCount(0);
-                setAnswersChecked(false);
+                setQuizzes(data);
             } catch (error) {
-                console.error('Error loading questions:', error.message);
+                console.error("Failed to fetch quizzes:", error);
             }
         };
 
-        loadQuestions();
-    }, [currentLevel]);
+        fetchQuizzes();
+    }, []);
 
-    const handleAnswerSelect = (questionIndex, selectedAnswer) => {
-        setUserAnswers((prevAnswers) => {
-            const newAnswers = [...prevAnswers];
-            newAnswers[questionIndex] = selectedAnswer;
-            return newAnswers;
+    const handleAnswerChange = (quizIndex, questionIndex, optionIndex) => {
+        setAnswers({
+            ...answers,
+            [quizIndex]: {
+                ...answers[quizIndex],
+                [questionIndex]: optionIndex,
+            },
         });
     };
 
-    const handleCheckAnswers = () => {
-        setShowCorrectAnswers(true);
-
-        // Disable radio buttons after checking
-        const radioButtons = document.querySelectorAll('input[type="radio"]');
-        radioButtons.forEach((radioButton) => {
-            radioButton.disabled = true;
-        });
-
-        // Calculate the count of correct answers
+    const handleSubmit = (e, quizIndex) => {
+        e.preventDefault();
+        const userAnswers = answers[quizIndex];
+        const quiz = quizzes[quizIndex];
         let correctCount = 0;
-        questions.forEach((q, index) => {
-            if (q.answer === userAnswers[index]) {
-                correctCount += 1;
-            }
-        });
-        setCorrectAnswerCount(correctCount);
 
-        // Set answersChecked to true after checking
-        setAnswersChecked(true);
-    };
-
-    const handleRestart = () => {
-        setUserAnswers(Array(questions.length).fill(null));
-
-        // Enable radio buttons after restarting
-        const radioButtons = document.querySelectorAll('input[type="radio"]');
-        radioButtons.forEach((radioButton) => {
-            radioButton.disabled = false;
+        const quizResults = quiz.questions.map((question, questionIndex) => {
+            const isCorrect = question.options[userAnswers[questionIndex]].isCorrect;
+            if (isCorrect) correctCount += 1;
+            return {
+                question: question.text,
+                isCorrect,
+                selectedOption: question.options[userAnswers[questionIndex]].text,
+                correctOption: question.options.find(option => option.isCorrect).text,
+            };
         });
 
-        setShowCorrectAnswers(false);
-        setCorrectAnswerCount(0);
-        setAnswersChecked(false);
+        setResults(quizResults);
+        setScore(correctCount);
+        setShowResults(true);
     };
 
-    const handleNextLevel = () => {
-        setCurrentLevel((prevLevel) => prevLevel + 1);
-        setAnswersChecked(false);
-    };
+    if (!quizzes.length) {
+        return <div>Loading...</div>;
+    }
 
     return (
-        <div className='suraq content__body'>
-            <div className='container'>
-                <div className='suraq__inner'>
-                    <h1 className='suraq__title title'>SURAQ - JAUAP</h1>
-
-                    <div className='suraq-desc'>
-                        <h2 className='suraq-desc__title'>{titleText}</h2>
-                        <p className='suraq-desc__text'>{levelText}</p>
-                    </div>
-
-                    {questions.length === 0 ? (
-                        <p>Loading questions...</p>
-                    ) : (
-                        <div className='questions'>
-                            {questions.map((q, index) => (
-                                <div key={q.id} className='question'>
-                                    <h3 className='question__title'>{q.id + ". " + q.question}</h3>
-                                    <ul className='question__list'>
-                                        {q.options.map((option, optionIndex) => (
-                                            <li key={optionIndex} className='question__item'>
-                                                <label
-                                                    className={`${
-                                                        showCorrectAnswers
-                                                            ? q.answer === option
-                                                                ? 'correct-answer'
-                                                                : userAnswers[index] === option
-                                                                    ? 'incorrect-answer'
-                                                                    : ''
-                                                            : ''
-                                                    }`}
-                                                >
-                                                    <input
-                                                        type="radio"
-                                                        value={option}
-                                                        checked={userAnswers[index] === option}
-                                                        onChange={() => handleAnswerSelect(index, option)}
-                                                        disabled={showCorrectAnswers}
-                                                    />
-                                                    {option}
-                                                </label>
-                                            </li>
-                                        ))}
-                                    </ul>
+        <div>
+            <h1>Suraq Jauap Quizzes</h1>
+            {quizzes.map((quiz, quizIndex) => (
+                <div key={quiz._id} className="quiz-block">
+                    <p>{quiz.passage}</p>
+                    <form onSubmit={(e) => handleSubmit(e, quizIndex)}>
+                        {quiz.questions.map((question, questionIndex) => (
+                            <div key={questionIndex} className="question-block">
+                                <p>{question.text}</p>
+                                <div className="options">
+                                    {question.options.map((option, optionIndex) => (
+                                        <div key={optionIndex}>
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name={`question-${quizIndex}-${questionIndex}`}
+                                                    value={optionIndex}
+                                                    checked={answers[quizIndex]?.[questionIndex] === optionIndex}
+                                                    onChange={() => handleAnswerChange(quizIndex, questionIndex, optionIndex)}
+                                                />
+                                                {option.text}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                        <button type="submit">Submit</button>
+                    </form>
+                    {showResults && (
+                        <div className="results">
+                            <h2>Results</h2>
+                            <p>Your Score: {score} out of {quiz.questions.length}</p>
+                            {results.map((result, index) => (
+                                <div key={index} className="result">
+                                    <p>Question: {result.question}</p>
+                                    <p>Your Answer: {result.selectedOption}</p>
+                                    <p>Correct Answer: {result.correctOption}</p>
+                                    <p>{result.isCorrect ? "Correct" : "Incorrect"}</p>
                                 </div>
                             ))}
-
-                            {showCorrectAnswers && (
-                                <div className='suraq__results'>
-                                    <p>Correct Answers: {correctAnswerCount}/{questions.length}</p>
-                                </div>
-                            )}
-
-                            <div className='questions__activity'>
-                                <button onClick={handleCheckAnswers} className='button button_check'>Check</button>
-
-                                {answersChecked && (
-                                    <>
-                                        <button onClick={handleRestart} className='button button_restart'>Restart</button>
-                                        <button onClick={handleNextLevel} className='button button_level'>Next Level</button>
-                                    </>
-                                )}
-                            </div>
                         </div>
                     )}
                 </div>
-            </div>
+            ))}
         </div>
     );
 };

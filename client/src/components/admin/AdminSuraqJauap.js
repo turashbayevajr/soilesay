@@ -3,6 +3,7 @@ import React, { useState } from "react";
 const AdminSuraqJauap = () => {
     const [questions, setQuestions] = useState([{ text: "", options: ["", "", "", ""], correctOption: null }]);
     const [passage, setPassage] = useState("");
+    const [showForm, setShowForm] = useState(false);
 
     const handlePassageChange = (e) => {
         setPassage(e.target.value);
@@ -35,7 +36,7 @@ const AdminSuraqJauap = () => {
         setQuestions(newQuestions);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Check if all fields are filled
@@ -44,62 +45,85 @@ const AdminSuraqJauap = () => {
             return;
         }
 
-        // Handle form submission logic here, such as sending data to the server
-        console.log({ passage, questions });
+        try {
+            const response = await fetch("http://localhost:8000/admin/suraqjauap", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ passage, questions }),
+            });
+
+            if (response.ok) {
+                alert("Quiz created successfully!");
+                setPassage("");
+                setQuestions([{ text: "", options: ["", "", "", ""], correctOption: null }]);
+            } else {
+                const data = await response.json();
+                alert(`Failed to create quiz: ${data.message}`);
+            }
+        } catch (error) {
+            alert("An error occurred while creating the quiz");
+        }
     };
 
     return (
         <div>
             <h1>Admin Suraq Jauap</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Passage:</label>
-                    <textarea
-                        value={passage}
-                        onChange={handlePassageChange}
-                        rows="4"
-                        cols="50"
-                        placeholder="Enter the passage here..."
-                        required
-                    />
-                </div>
-                {questions.map((question, questionIndex) => (
-                    <div key={questionIndex} className="question-block">
-                        <label>Question {questionIndex + 1}:</label>
-                        <input
-                            type="text"
-                            value={question.text}
-                            onChange={(e) => handleQuestionChange(questionIndex, e)}
-                            placeholder={`Enter question ${questionIndex + 1}`}
+            <button onClick={() => setShowForm(!showForm)} className="admin-button">
+                {showForm ? "Hide Form" : "Add Level"}
+            </button>
+            {showForm && (
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label>Passage:</label>
+                        <textarea
+                            value={passage}
+                            onChange={handlePassageChange}
+                            rows="4"
+                            cols="50"
+                            placeholder="Enter the passage here..."
                             required
                         />
-                        <div className="options">
-                            {question.options.map((option, optionIndex) => (
-                                <div key={optionIndex}>
-                                    <label>Option {optionIndex + 1}:</label>
-                                    <input
-                                        type="text"
-                                        value={option}
-                                        onChange={(e) => handleOptionChange(questionIndex, optionIndex, e)}
-                                        placeholder={`Enter option ${optionIndex + 1}`}
-                                        required
-                                    />
-                                    <input
-                                        type="radio"
-                                        name={`correctOption-${questionIndex}`}
-                                        checked={question.correctOption === optionIndex}
-                                        onChange={() => handleCorrectOptionChange(questionIndex, optionIndex)}
-                                        required
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                        <button type="button" className="admin-button delete-button" onClick={() => deleteQuestion(questionIndex)}>Delete Question</button>
                     </div>
-                ))}
-                <button type="button" className="admin-button" onClick={addQuestion}>Add Question</button>
-                <button type="submit" className="admin-button">Submit</button>
-            </form>
+                    {questions.map((question, questionIndex) => (
+                        <div key={questionIndex} className="question-block">
+                            <label>Question {questionIndex + 1}:</label>
+                            <input
+                                type="text"
+                                value={question.text}
+                                onChange={(e) => handleQuestionChange(questionIndex, e)}
+                                placeholder={`Enter question ${questionIndex + 1}`}
+                                required
+                            />
+                            <div className="options">
+                                {question.options.map((option, optionIndex) => (
+                                    <div key={optionIndex}>
+                                        <label>Option {optionIndex + 1}:</label>
+                                        <input
+                                            type="text"
+                                            value={option}
+                                            onChange={(e) => handleOptionChange(questionIndex, optionIndex, e)}
+                                            placeholder={`Enter option ${optionIndex + 1}`}
+                                            required
+                                        />
+                                        <input
+                                            type="radio"
+                                            name={`correctOption-${questionIndex}`}
+                                            checked={question.correctOption === optionIndex}
+                                            onChange={() => handleCorrectOptionChange(questionIndex, optionIndex)}
+                                            required
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <button type="button" className="admin-button delete-button" onClick={() => deleteQuestion(questionIndex)}>Delete Question</button>
+                        </div>
+                    ))}
+                    <button type="button" className="admin-button" onClick={addQuestion}>Add Question</button>
+                    <button type="submit" className="admin-button">Submit</button>
+                </form>
+            )}
         </div>
     );
 };

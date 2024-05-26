@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Account from "./components/account/Account";
 import Sidebar from "./components/sidebar/Sidebar";
-import SuraqJauap from "./components/suraq-jauap/SuraqJauap";
+import SuraqJauap from "./components/suraq-jauap/SuraqJauap";  // User component
 import MaqalDrop from "./components/maqal-drop/MaqalDrop";
-import AdminSuraqJauap from "./components/admin/AdminSuraqJauap";
+import AdminSuraqJauap from "./components/admin/AdminSuraqJauap";  // Admin component
 import AdminMaqalDrop from "./components/admin/AdminMaqalDrop";
 import Tanda from "./components/tanda/Tanda";
 import Sozdly from "./components/sozdly/Sozdly";
