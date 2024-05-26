@@ -576,6 +576,49 @@ body {
   background-color: #c82333;
 }
 
+/* Clear Button */
+.clear-button {
+  margin-top: 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.clear-button:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Levels Table */
+.levels {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.levels table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.levels th, .levels td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.levels th {
+  background-color: #f2f2f2;
+}
+
+.levels tr:hover {
+  background-color: #f1f1f1;
+}
 
 /* Results */
 .results {

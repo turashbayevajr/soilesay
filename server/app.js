@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const registrationRouter = require("./router/registration");
 const suraqJauapRouter = require("./router/suraqjauap");
+const userProgressRouter = require("./router/userProgress");
 
 const app = express();
 app.use(express.json());
@@ -11,9 +12,13 @@ app.use(cors());
 
 app.use("/", registrationRouter);
 app.use("/", suraqJauapRouter);
+app.use("/", userProgressRouter);
 
 mongoose
-    .connect("mongodb+srv://soilsesay:soilsay123@soilesay.qtvrxci.mongodb.net/SoileSay")
+    .connect("mongodb+srv://soilsesay:soilsay123@soilesay.qtvrxci.mongodb.net/SoileSay", {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
     .then(() => {
         console.log("MongoDB connected");
     })

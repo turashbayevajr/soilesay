@@ -4,6 +4,7 @@ const AdminSuraqJauap = () => {
     const [questions, setQuestions] = useState([{ text: "", options: ["", "", "", ""], correctOption: null }]);
     const [passage, setPassage] = useState("");
     const [showForm, setShowForm] = useState(false);
+    const [level, setLevel] = useState(null);
 
     const handlePassageChange = (e) => {
         setPassage(e.target.value);
@@ -55,7 +56,9 @@ const AdminSuraqJauap = () => {
             });
 
             if (response.ok) {
-                alert("Quiz created successfully!");
+                const data = await response.json();
+                alert(`Quiz created successfully at level ${data.level}!`);
+                setLevel(data.level);
                 setPassage("");
                 setQuestions([{ text: "", options: ["", "", "", ""], correctOption: null }]);
             } else {
@@ -70,6 +73,7 @@ const AdminSuraqJauap = () => {
     return (
         <div>
             <h1>Admin Suraq Jauap</h1>
+            {level && <p> New level: {level+1}</p>}
             <button onClick={() => setShowForm(!showForm)} className="admin-button">
                 {showForm ? "Hide Form" : "Add Level"}
             </button>

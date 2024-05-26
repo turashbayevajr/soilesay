@@ -8,7 +8,12 @@ router.post("/admin/suraqjauap", async (req, res) => {
     const { passage, questions } = req.body;
 
     try {
+        // Get the current highest level
+        const highestLevelQuiz = await SuraqJauap.findOne().sort({ level: -1 });
+        const nextLevel = highestLevelQuiz ? highestLevelQuiz.level + 1 : 1;
+
         const newQuiz = new SuraqJauap({
+            level: nextLevel,
             passage,
             questions: questions.map((question) => ({
                 text: question.text,
@@ -20,9 +25,10 @@ router.post("/admin/suraqjauap", async (req, res) => {
         });
 
         await newQuiz.save();
-        res.status(201).json({ message: "Quiz created successfully!" });
+        res.status(201).json({ message: "Quiz created successfully!", level: nextLevel });
     } catch (error) {
-        res.status(500).json({ message: "Failed to create quiz", error });
+        console.error("Error creating quiz:", error);
+        res.status(500).json({ message: "Failed to create quiz", error: error.message });
     }
 });
 

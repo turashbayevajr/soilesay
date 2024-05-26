@@ -11,6 +11,7 @@ const questionSchema = new mongoose.Schema({
 });
 
 const suraqJauapSchema = new mongoose.Schema({
+    level: { type: Number, required: true, unique: true },
     passage: { type: String, required: true },
     questions: [questionSchema],
 });
