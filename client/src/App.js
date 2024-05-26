@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Account from "./components/account/Account";
 import Sidebar from "./components/sidebar/Sidebar";
@@ -12,7 +12,7 @@ import Home from "./components/home/Home";
 import Adamzat from "./components/adamzat/Adamzat";
 import SignIn from "./components/authorization/SignIn";
 import SignUp from "./components/authorization/SignUp";
-import axios from "axios";
+import Profile from "./components/account/Profile";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,9 +50,10 @@ function App() {
                                 <Route path="/suraqJauap" element={<SuraqJauap />} />
                                 <Route path="/sozjumbaq" element={<Sozjumbaq />} />
                                 <Route path="/adamzat" element={<Adamzat />} />
+                                <Route path="/profile" element={<Profile />} />
                             </Routes>
                             
-                            <Account username={userData.username} email={userData.email} onLogout={handleLogout} />
+                            <Account username={userData.username} email={userData.email} avatar={userData.avatar} onLogout={handleLogout} />
                         </div>
                     </>
                 )}

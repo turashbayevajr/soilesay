@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 const Account = ({ username, email, onLogout }) => {
     const navigate = useNavigate();
@@ -8,7 +7,6 @@ const Account = ({ username, email, onLogout }) => {
     async function submit(e) {
         e.preventDefault();
 
-        
         onLogout({ username, email });
         navigate("/");
     }
@@ -21,7 +19,9 @@ const Account = ({ username, email, onLogout }) => {
                     <h3 className="account__username">{username}</h3>
                     <p className="account__email">{email}</p>
                     <div className="account__buttons">
-                        <button className="button__profile">My Profile</button>
+                        <button className="button__profile" onClick={() => navigate("/profile", { state: { username, email } })}>
+                            My Profile
+                        </button>
                         <button className="button_logout" onClick={submit}>
                             Log Out
                         </button>

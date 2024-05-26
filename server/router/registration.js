@@ -61,8 +61,8 @@ router.post("/signup", async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = new User({
                 email: email,
-                password: hashedPassword,
                 username: username,
+                password: hashedPassword,
             });
             await newUser.save();
             res.json("notexist");
