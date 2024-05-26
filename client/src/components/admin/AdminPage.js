@@ -1,14 +1,10 @@
 import React from "react";
 
-const AdminPage = ({ isAdmin }) => {
-    if (!isAdmin) {
-        return <div>Access Denied</div>;
-    }
-
+const AdminPage = () => {
     return (
-        <div className="admin">
+        <div className="admin-page">
             <h1>Admin Page</h1>
-            <p>Welcome to the admin page.</p>
+            <p>Welcome, Admin! You have special access to this page.</p>
         </div>
     );
 };
