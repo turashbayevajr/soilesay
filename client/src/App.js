@@ -56,8 +56,8 @@ function App() {
                                 <Route path="/profile" element={<Profile />} />
                                 {userData.isAdmin && (
                                     <>
-                                        <Route path="/adminMaqalDrop" element={<AdminMaqalDrop />} />
-                                        <Route path="/adminSuraqJauap" element={<AdminSuraqJauap />} />
+                                        <Route path="/adminMaqalDrop" element={<AdminMaqalDrop username={userData.username} />} />
+                                        <Route path="/adminSuraqJauap" element={<AdminSuraqJauap username={userData.username} />} />
                                         <Route path="/admin" element={<AdminPage />} />
                                     </>
                                 )}
