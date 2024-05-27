@@ -14,10 +14,10 @@ const Sidebar = ({ isAdmin }) => {
               <Link className="action__item" to="/admin">
                 <img src="" alt="" />Admin Page
               </Link>
-              <Link className="action__item" to="/admin/maqalDrop">
+              <Link className="action__item" to="/adminMaqalDrop">
                 <img src="./icons/teenyicons_drag-outline.svg" alt="" />Maqal Drop
               </Link>
-              <Link className="action__item" to="/admin/suraqJauap">
+              <Link className="action__item" to="/adminSuraqJauap">
                 <img src="./icons/ic_round-quiz.svg" alt="" />Suraq - Jauap
               </Link>
             </>

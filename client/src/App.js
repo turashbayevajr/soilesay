@@ -15,6 +15,7 @@ import SignUp from "./components/authorization/SignUp";
 import Profile from "./components/account/Profile";
 import AdminMaqalDrop from "./components/admin/AdminMaqalDrop";
 import AdminSuraqJauap from "./components/admin/AdminSuraqJauap";
+import AdminPage from "./components/admin/AdminPage";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -42,19 +43,24 @@ function App() {
                     </div>
                 ) : (
                     <>
-                        <Sidebar />
+                        <Sidebar isAdmin={userData.isAdmin} />
                         <div className="content">
                             <Routes>
                                 <Route path="/home" element={<Home />} />
                                 <Route path="/sozdly" element={<Sozdly />} />
                                 <Route path="/tanda" element={<Tanda />} />
                                 <Route path="/maqalDrop" element={<MaqalDrop />} />
-                                <Route path="/suraqJauap" element={<SuraqJauap username={userData.username} />} />
+                                <Route path="/suraqJauap" element={<SuraqJauap username={userData.username} currentLevel={userData.currentLevel} />} />
                                 <Route path="/sozjumbaq" element={<Sozjumbaq />} />
                                 <Route path="/adamzat" element={<Adamzat />} />
                                 <Route path="/profile" element={<Profile />} />
-                                <Route path="/adminMaqalDrop" element={<AdminMaqalDrop />} />
-                                <Route path="/adminSuraqJauap" element={<AdminSuraqJauap />} />
+                                {userData.isAdmin && (
+                                    <>
+                                        <Route path="/adminMaqalDrop" element={<AdminMaqalDrop />} />
+                                        <Route path="/adminSuraqJauap" element={<AdminSuraqJauap />} />
+                                        <Route path="/admin" element={<AdminPage />} />
+                                    </>
+                                )}
                             </Routes>
                             <Account username={userData.username} email={userData.email} onLogout={handleLogout} />
                         </div>

@@ -27,20 +27,20 @@ router.post("/", async (req, res) => {
         if (user) {
             const isMatch = await bcrypt.compare(password, user.password);
             if (isMatch) {
-                res.json({ status: "exist", isAdmin: user.isAdmin });
+                res.json({ status: "exist", username: user.username, isAdmin: user.isAdmin });
             } else {
-                res.json({ status: "wrongpassword" });
+                res.json("wrongpassword");
             }
         } else {
-            res.json({ status: "notexist" });
+            res.json("notexist");
         }
     } catch (e) {
-        res.json({ status: "fail" });
+        res.json("fail");
     }
 });
 
 router.post("/signup", async (req, res) => {
-    const { email, password, username, isAdmin } = req.body;
+    const { email, password, username } = req.body;
 
     if (!validateEmail(email)) {
         res.json("invalidemail");
@@ -63,7 +63,6 @@ router.post("/signup", async (req, res) => {
                 email: email,
                 password: hashedPassword,
                 username: username,
-                isAdmin: isAdmin || false,
             });
             await newUser.save();
             res.json("notexist");
