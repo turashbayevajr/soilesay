@@ -1,37 +1,93 @@
 const express = require('express');
 const router = express.Router();
-const News = require('../models/News');
-const User = require('../models/user'); // Add this line
+const Post = require('../models/post');
+const multer = require('multer');
 
-// Add a news sentence (admin only)
-router.post('/add', async (req, res) => {
-  const { username, sentence } = req.body;
-  
-  if (!username) {
-    return res.status(401).json({ message: 'Username is required' });
-  }
-
-  try {
-    const user = await User.findOne({ username });
-    if (user && user.isAdmin) {
-      const newNews = new News({ sentence });
-      await newNews.save();
-      res.status(201).json({ message: 'News added successfully' });
-    } else {
-      res.status(403).json({ message: 'Access denied' });
-    }
-  } catch (error) {
-    return res.status(500).json({ message: 'Internal server error' });
+// Configure Multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads/'); // Specify the destination folder for uploaded files
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname); // Use the original filename for the uploaded file
   }
 });
 
-// Fetch all news sentences
+const upload = multer({ storage: storage });
+
+async function getPost(req, res, next) {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Cannot find news' });
+    }
+    res.post = post;
+    next();
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+}
+
+// Route to get all news
 router.get('/', async (req, res) => {
   try {
-    const news = await News.find().sort({ date: 1 }); // Sorted by date ascending
-    res.status(200).json(news);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    const posts = await Post.find();
+    res.json({ posts });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Route to get news by ID
+router.get('/:id', getPost, (req, res) => {
+  res.json({ post: res.post });
+});
+
+// Route to add news
+router.post('/add', upload.single('image'), async (req, res) => {
+  const post = new Post({
+    title: req.body.title,
+    message: req.body.message,
+    image: req.file ? req.file.filename : null // Save filename if file was uploaded
+  });
+
+  try {
+    const newPost = await post.save();
+    res.status(201).json(newPost);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Route to edit news
+router.post('/edit/:id', upload.single('image'), getPost, async (req, res) => {
+  if (req.body.title != null) {
+    res.post.title = req.body.title;
+  }
+  if (req.body.message != null) {
+    res.post.message = req.body.message;
+  }
+  if (req.file != null) {
+    res.post.image = req.file.filename; // Assuming multer middleware is used to handle file uploads
+  }
+  try {
+    const updatedPost = await res.post.save();
+    res.json(updatedPost);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Route to delete news
+router.delete('/:id', async (req, res) => {
+  try {
+    const post = await Post.findByIdAndDelete(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'News not found' });
+    }
+    res.json({ message: 'News deleted' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
