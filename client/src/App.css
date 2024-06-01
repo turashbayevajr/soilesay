@@ -640,3 +640,26 @@ body {
 .quiz-block {
   margin-bottom: 40px;
 }
+
+/* In your App.css or a separate CSS file */
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+.btn {
+  margin-right: 10px;
+}
+.card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}

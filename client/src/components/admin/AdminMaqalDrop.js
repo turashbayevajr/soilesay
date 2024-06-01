@@ -7,7 +7,7 @@ function AdminMaqalDrop({ username }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/api/news/add', {
+      const response = await axios.post('http://localhost:8000/api/maqal/add', {
         username,
         sentence,
       });
@@ -30,7 +30,7 @@ function AdminMaqalDrop({ username }) {
           value={sentence}
           onChange={(e) => setSentence(e.target.value)}
         ></textarea>
-        <button type="submit">Add News</button>
+        <button type="submit">Add Level</button>
       </form>
     </div>
   );

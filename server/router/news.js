@@ -59,25 +59,27 @@ router.post('/add', upload.single('image'), async (req, res) => {
   }
 });
 
+
 // Route to edit news
-router.post('/edit/:id', upload.single('image'), getPost, async (req, res) => {
-  if (req.body.title != null) {
-    res.post.title = req.body.title;
-  }
-  if (req.body.message != null) {
-    res.post.message = req.body.message;
-  }
-  if (req.file != null) {
-    res.post.image = req.file.filename; // Assuming multer middleware is used to handle file uploads
-  }
+router.post('/edit/:id', upload.single('image'), async (req, res) => {
   try {
-    const updatedPost = await res.post.save();
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Cannot find news' });
+    }
+
+    post.title = req.body.title || post.title;
+    post.message = req.body.message || post.message;
+    if (req.file) {
+      post.image = req.file.filename;
+    }
+
+    const updatedPost = await post.save();
     res.json(updatedPost);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
-
 // Route to delete news
 router.delete('/:id', async (req, res) => {
   try {

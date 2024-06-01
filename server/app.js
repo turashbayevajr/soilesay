@@ -5,6 +5,7 @@ const registrationRouter = require("./router/registration");
 const suraqJauapRouter = require("./router/suraqjauap");
 const userProgressRouter = require("./router/userProgress");
 const newsRouter = require("./router/news");
+const maqalDropRouter = require("./router/maqalDrop");
 
 const app = express();
 app.use(express.json());
@@ -14,10 +15,11 @@ app.use(cors());
 app.use("/", registrationRouter);
 app.use("/", suraqJauapRouter);
 app.use("/", userProgressRouter);
-app.use("/api/news", newsRouter);
+app.use("/api/maqal", maqalDropRouter);
+app.use("/api/post", newsRouter);
 app.use('/uploads', express.static('uploads'));
 
-
+// MongoDB connection
 mongoose
     .connect("mongodb+srv://soilsesay:soilsay123@soilesay.qtvrxci.mongodb.net/SoileSay", {
         useNewUrlParser: true,
@@ -30,6 +32,7 @@ mongoose
         console.error("MongoDB connection error:", error);
     });
 
+// Start server
 app.listen(8000, () => {
-    console.log("Port connected on 8000");
+    console.log("Server running on port 8000");
 });

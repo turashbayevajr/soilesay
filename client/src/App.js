@@ -16,6 +16,10 @@ import Profile from "./components/account/Profile";
 import AdminMaqalDrop from "./components/admin/AdminMaqalDrop";
 import AdminSuraqJauap from "./components/admin/AdminSuraqJauap";
 import AdminPage from "./components/admin/AdminPage";
+import AdminAddNews from "./components/admin/AdminAddNews";
+import AdminEditNews from "./components/admin/AdminEditNews";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -59,6 +63,8 @@ function App() {
                                         <Route path="/adminMaqalDrop" element={<AdminMaqalDrop username={userData.username} />} />
                                         <Route path="/adminSuraqJauap" element={<AdminSuraqJauap username={userData.username} />} />
                                         <Route path="/admin" element={<AdminPage />} />
+                                        <Route path="/admin/add" element={<AdminAddNews />} />
+                                        <Route path="/admin/edit/:id" element={<AdminEditNews />} />
                                     </>
                                 )}
                             </Routes>
