@@ -20,20 +20,23 @@ router.get("/", (req, res) => {
 
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
+    console.log(`Attempting login for email: ${email}`); // Log email
 
     try {
         const user = await User.findOne({ email: email });
-
         if (user) {
+            console.log(`User found: ${user}`); // Log user
             const isMatch = await user.comparePassword(password);
             if (isMatch) {
                 const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, 'qolshatyr', { expiresIn: '1h' });
                 console.log('Token generated:', token); // Log the token generated
                 res.json({ status: "exist", username: user.username, isAdmin: user.isAdmin, token });
             } else {
+                console.log('Incorrect password'); // Log incorrect password
                 res.json({ status: "error", message: "Incorrect password" });
             }
         } else {
+            console.log('Email not registered'); // Log email not registered
             res.json({ status: "error", message: "Email not registered" });
         }
     } catch (e) {
@@ -41,7 +44,6 @@ router.post("/login", async (req, res) => {
         res.json({ status: "error", message: "An error occurred during login" });
     }
 });
-
 
 router.post("/signup", async (req, res) => {
     const { email, password, username } = req.body;
@@ -68,7 +70,7 @@ router.post("/signup", async (req, res) => {
                 username: username,
             });
             await newUser.save();
-            const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, 'qolshatyr', { expiresIn: '1h' }); // Ensure the secret is 'qolshatyr'
+            const token = jwt.sign({ id: newUser._id, isAdmin: newUser.isAdmin }, 'qolshatyr', { expiresIn: '1h' });
             res.json({ status: "success", message: "User registered successfully", token });
         }
     } catch (e) {

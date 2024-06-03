@@ -8,14 +8,12 @@ const newsRouter = require("./router/news");
 const maqalDropRouter = require("./router/maqalDrop");
 const profileRouter = require("./router/profile")
 const taldaRouter = require("./router/talda");
-const authenticate = require('./middleware/authenticateUser');
 
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(authenticate);
 
 app.use("/", registrationRouter);
 app.use("/", suraqJauapRouter);
