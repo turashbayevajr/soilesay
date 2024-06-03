@@ -2,21 +2,35 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2257e3f4-9196-4c4d-98c3-6ee70c3557b7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/server/models/MaqalDrop.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/router/maqalDrop.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/ErrorBoundary.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/admin/AdminTalda.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/admin/AdminTaldaAdd.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/admin/AdminTaldaEdit.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/api.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/talda/Talda.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/middleware/authenticateUser.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/middleware/checkAdmin.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/models/talda.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/router/profile.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/router/talda.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/public/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/public/manifest.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/admin/AdminAddNews.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/admin/AdminAddNews.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/admin/AdminEditNews.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/admin/AdminEditNews.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/admin/AdminMaqalDrop.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/admin/AdminMaqalDrop.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/account/Account.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/account/Account.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/account/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/account/Profile.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/admin/AdminPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/admin/AdminPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/admin/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/admin/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/home/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/sozjumbaq/Sozjumbaq.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/sozjumbaq/Sozjumbaq.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/authorization/SignIn.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/authorization/SignIn.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/authorization/SignUp.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/authorization/SignUp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/sidebar/Sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/sidebar/Sidebar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/sozjumbaq/Sozjumbaq.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/talda/Talda.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/router/news.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/router/news.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/middleware/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/middleware/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/router/registration.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/router/registration.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +40,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="CSS File" />
         <option value="JavaScript File" />
       </list>
     </option>
@@ -45,6 +60,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -61,6 +77,8 @@
       <workItem from="1716928272143" duration="8644000" />
       <workItem from="1716960909767" duration="6788000" />
       <workItem from="1717156958403" duration="1946000" />
+      <workItem from="1717234378511" duration="16277000" />
+      <workItem from="1717320660925" duration="23862000" />
     </task>
     <servers />
   </component>

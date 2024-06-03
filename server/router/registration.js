@@ -1,6 +1,6 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
@@ -18,37 +18,41 @@ router.get("/", (req, res) => {
     res.send("Welcome to the registration API");
 });
 
-router.post("/", async (req, res) => {
+router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     try {
         const user = await User.findOne({ email: email });
 
         if (user) {
-            const isMatch = await bcrypt.compare(password, user.password);
+            const isMatch = await user.comparePassword(password);
             if (isMatch) {
-                res.json({ status: "exist", username: user.username, isAdmin: user.isAdmin });
+                const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, 'qolshatyr', { expiresIn: '1h' });
+                console.log('Token generated:', token); // Log the token generated
+                res.json({ status: "exist", username: user.username, isAdmin: user.isAdmin, token });
             } else {
-                res.json("wrongpassword");
+                res.json({ status: "error", message: "Incorrect password" });
             }
         } else {
-            res.json("notexist");
+            res.json({ status: "error", message: "Email not registered" });
         }
     } catch (e) {
-        res.json("fail");
+        console.error(e);
+        res.json({ status: "error", message: "An error occurred during login" });
     }
 });
+
 
 router.post("/signup", async (req, res) => {
     const { email, password, username } = req.body;
 
     if (!validateEmail(email)) {
-        res.json("invalidemail");
+        res.json({ status: "error", message: "Invalid email format" });
         return;
     }
 
     if (!validatePassword(password)) {
-        res.json("weakpassword");
+        res.json({ status: "error", message: "Weak password" });
         return;
     }
 
@@ -56,19 +60,20 @@ router.post("/signup", async (req, res) => {
         const user = await User.findOne({ email: email });
 
         if (user) {
-            res.json("exist");
+            res.json({ status: "error", message: "Email already exists" });
         } else {
-            const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = new User({
                 email: email,
-                password: hashedPassword,
+                password: password,
                 username: username,
             });
             await newUser.save();
-            res.json("notexist");
+            const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, 'qolshatyr', { expiresIn: '1h' }); // Ensure the secret is 'qolshatyr'
+            res.json({ status: "success", message: "User registered successfully", token });
         }
     } catch (e) {
-        res.json("fail");
+        console.error(e);
+        res.json({ status: "error", message: "An error occurred during signup" });
     }
 });
 

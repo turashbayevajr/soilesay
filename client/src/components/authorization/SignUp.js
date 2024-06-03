@@ -1,14 +1,20 @@
+// SignUp.js
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { signUp } from "../api"; // Import the signUp function from api.js
 
 function SignUp({ onLogin }) {
     const navigate = useNavigate();
-    
+
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -18,6 +24,14 @@ function SignUp({ onLogin }) {
     const validatePassword = (password) => {
         const regex = /^(?=.*\d)[A-Za-z\d]{8,}$/;
         return regex.test(password);
+    };
+
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleShowConfirmPassword = () => {
+        setShowConfirmPassword(!showConfirmPassword);
     };
 
     async function submit(e) {
@@ -33,24 +47,22 @@ function SignUp({ onLogin }) {
             return;
         }
 
-        try {
-            const res = await axios.post("http://localhost:8000/signup", {
-                email,
-                password,
-                username
-            });
+        if (password !== confirmPassword) {
+            setErrorMessage("Passwords do not match.");
+            return;
+        }
 
-            if (res.data === "exist") {
-                setErrorMessage("User already exists");
-            } else if (res.data === "notexist") {
+        try {
+            const data = await signUp(username, email, password);
+
+            if (data.status === "success") {
                 onLogin({ username, email });
                 navigate("/home", { state: { id: email } });
-            } else {
-                setErrorMessage("Sign up failed");
+            } else if (data.status === "error") {
+                setErrorMessage(data.message);
             }
-        } catch (e) {
+        } catch (error) {
             setErrorMessage("An error occurred. Please try again.");
-            console.log(e);
         }
     }
 
@@ -73,24 +85,45 @@ function SignUp({ onLogin }) {
                                 className="signup__input input"
                                 type="text"
                                 placeholder="Enter Username"
+                                value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                            ></input>
+                            />
 
                             <input
                                 className="signup__input input"
                                 type="email"
                                 placeholder="Enter Email"
+                                value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                            ></input>
+                            />
 
-                            <input
-                                className="signup__input input"
-                                type="password"
-                                placeholder="Create password"
-                                onChange={(e) => setPassword(e.target.value)}
-                            ></input>
+                            <div className="password-container">
+                                <input
+                                    className="signup__input input"
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Create password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <span className="eye-icon" onClick={toggleShowPassword}>
+                                    <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                                </span>
+                            </div>
 
-                            {errorMessage && <p className="error-message" >{errorMessage}</p>}
+                            <div className="password-container">
+                                <input
+                                    className="signup__input input"
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    placeholder="Confirm password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                />
+                                <span className="eye-icon" onClick={toggleShowConfirmPassword}>
+                                    <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
+                                </span>
+                            </div>
+
+                            {errorMessage && <p className="error-message">{errorMessage}</p>}
 
                             <input className="button-submit" type="submit" value="Sign Up" />
 

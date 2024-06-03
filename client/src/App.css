@@ -663,3 +663,27 @@ body {
   font-size: 1.25rem;
   font-weight: bold;
 }
+
+
+.password-container {
+  position: relative;
+}
+
+.signup__input {
+  width: 100%;
+  padding-right: 40px; /* Add space for the eye icon */
+}
+
+
+.eye-icon:hover {
+  color: #333; /* Adjust hover color to match the design */
+}
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #666;
+}

@@ -72,5 +72,56 @@ export const deleteNews = async (id) => {
         throw error;
     }
 };
+export const getAllTalda = async () => {
+    try {
+        const response = await api.get('/talda');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching talda:', error);
+        throw error;
+    }
+};
+
+export const addTalda = async (taldaData) => {
+    try {
+        const response = await api.post('/talda', taldaData);
+        return response.data;
+    } catch (error) {
+        console.error('Error adding talda:', error);
+        throw error;
+    }
+};
+
+export const getTaldaById = async (id) => {
+    try {
+        const response = await api.get(`/talda/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching talda by ID:', error);
+        throw error;
+    }
+};
+
+
+export const editTalda = async (id, taldaData) => {
+    try {
+        const response = await api.put(`/talda/${id}`, taldaData);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating talda:', error);
+        throw error;
+    }
+};
+
+export const deleteTalda = async (id) => {
+    try {
+        const response = await api.delete(`/talda/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting talda:', error);
+        throw error;
+    }
+};
+
 
 export default api;

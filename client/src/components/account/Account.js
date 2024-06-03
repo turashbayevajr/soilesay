@@ -1,13 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const Account = ({ username, email, onLogout }) => {
+const Account = ({ username, email, avatar, onLogout }) => {
     const navigate = useNavigate();
 
     async function submit(e) {
         e.preventDefault();
-
-        onLogout({ username, email });
+        onLogout({ username, email, avatar });
         navigate("/");
     }
 
@@ -15,11 +14,11 @@ const Account = ({ username, email, onLogout }) => {
         <div className="content__right">
             <div className="account">
                 <div className="account__inner">
-                    <img className="account__avatar" src="./images/Avatar.png" alt="User Avatar" />
+                    <img className="account__avatar" src={avatar ? `http://localhost:8000/${avatar}` : "./images/Avatar.png"} alt="User Avatar" />
                     <h3 className="account__username">{username}</h3>
                     <p className="account__email">{email}</p>
                     <div className="account__buttons">
-                        <button className="button__profile" onClick={() => navigate("/profile", { state: { username, email } })}>
+                        <button className="button__profile" onClick={() => navigate("/profile", { state: { username, email, avatar } })}>
                             My Profile
                         </button>
                         <button className="button_logout" onClick={submit}>

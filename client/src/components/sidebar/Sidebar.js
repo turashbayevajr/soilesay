@@ -20,6 +20,9 @@ const Sidebar = ({ isAdmin }) => {
               <Link className="action__item" to="/adminSuraqJauap">
                 <img src="./icons/ic_round-quiz.svg" alt="" />Suraq - Jauap
               </Link>
+                <Link className="action__item" to="/admin/talda">
+                    <img src="./icons/teenyicons_drag-outline.svg" alt="" />Talda
+                </Link>
             </>
           ) : (
             <>
@@ -38,6 +41,9 @@ const Sidebar = ({ isAdmin }) => {
               <Link className="action__item" to="/suraqJauap">
                 <img src="./icons/ic_round-quiz.svg" alt="" />Suraq - Jauap
               </Link>
+                <Link className="action__item" to="/talda">
+                    <img src="./icons/teenyicons_drag-outline.svg" alt="" />Talda
+                </Link>
             </>
           )}
         </div>

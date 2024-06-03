@@ -1,43 +1,38 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { signIn } from "../api"; // Import the signIn function from api.js
 
 function SignIn({ onLogin }) {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
 
     async function submit(e) {
         e.preventDefault();
 
         try {
-            await axios
-                .post("http://localhost:8000/", {
-                    email,
-                    password,
-                })
-                .then((res) => {
-                    if (res.data.status === "exist") {
-                        onLogin({ email, username: res.data.username, isAdmin: res.data.isAdmin });
-                        if (res.data.isAdmin) {
-                            navigate("/admin");
-                        } else {
-                            navigate("/home");
-                        }
-                    } else if (res.data.status === "notexist") {
-                        setErrorMessage("User has not signed up");
-                    } else if (res.data.status === "wrongpassword") {
-                        setErrorMessage("Incorrect password");
-                    }
-                })
-                .catch((e) => {
-                    setErrorMessage("An error occurred. Please try again.");
-                    console.log(e);
-                });
-        } catch (e) {
+            const data = await signIn(email, password);
+
+            if (data.status === "exist") {
+                onLogin({ email, username: data.username, isAdmin: data.isAdmin });
+                if (data.isAdmin) {
+                    navigate("/admin");
+                } else {
+                    navigate("/home");
+                }
+            } else if (data.status === "error") {
+                setErrorMessage(data.message);
+            }
+        } catch (error) {
             setErrorMessage("An error occurred. Please try again.");
-            console.log(e);
         }
     }
 
@@ -52,14 +47,21 @@ function SignIn({ onLogin }) {
                             className="signin__input input"
                             type="email"
                             placeholder="Enter email address"
+                            value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
-                        <input
-                            className="signin__input input"
-                            type="password"
-                            placeholder="Enter password"
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                        <div className="password-container">
+                            <input
+                                className="signin__input input"
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Enter password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <span className="eye-icon" onClick={toggleShowPassword}>
+                                <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                            </span>
+                        </div>
                         {errorMessage && <p className="error-message">{errorMessage}</p>}
                         <input className="button-submit" type="submit" value="Submit" />
                         <br />
