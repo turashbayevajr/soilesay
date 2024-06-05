@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const authenticateUser = require("../middleware/authenticateUser");
 
 const router = express.Router();
 
@@ -68,6 +69,7 @@ router.post("/signup", async (req, res) => {
                 email: email,
                 password: password,
                 username: username,
+                taldaLevel: 1 // Initialize taldaLevel to 1 for new users
             });
             await newUser.save();
             const token = jwt.sign({ id: newUser._id, isAdmin: newUser.isAdmin }, 'qolshatyr', { expiresIn: '1h' });
@@ -76,6 +78,23 @@ router.post("/signup", async (req, res) => {
     } catch (e) {
         console.error(e);
         res.json({ status: "error", message: "An error occurred during signup" });
+    }
+});
+
+// Example protected route to update user profile
+router.put("/profile", authenticateUser, async (req, res) => {
+    try {
+        const user = req.user;
+        const { username, avatar } = req.body;
+
+        user.username = username || user.username;
+        user.avatar = avatar || user.avatar;
+
+        await user.save();
+        res.json({ status: "success", message: "Profile updated successfully", user });
+    } catch (e) {
+        console.error(e);
+        res.json({ status: "error", message: "An error occurred while updating profile" });
     }
 });
 

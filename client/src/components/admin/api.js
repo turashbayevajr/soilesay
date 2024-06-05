@@ -1,9 +1,21 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000/api', // Assuming your server is running on port 8000
+    baseURL: 'http://localhost:8000/api', // Adjust if necessary
 });
 
+// Add a request interceptor to include the token
+api.interceptors.request.use(config => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+}, error => {
+    return Promise.reject(error);
+});
+
+// News API calls
 export const getAllNews = async () => {
     try {
         const response = await api.get('/post');
@@ -33,7 +45,7 @@ export const addNews = async (newsData) => {
 
         const response = await api.post('/post/add', formData, {
             headers: {
-                'Content-Type': 'multipart/form-data' // Important for multer to handle file uploads
+                'Content-Type': 'multipart/form-data'
             }
         });
 
@@ -43,6 +55,7 @@ export const addNews = async (newsData) => {
         throw error;
     }
 };
+
 export const editNews = async (id, newsData) => {
     try {
         const formData = new FormData();
@@ -63,6 +76,7 @@ export const editNews = async (id, newsData) => {
         throw error;
     }
 };
+
 export const deleteNews = async (id) => {
     try {
         const response = await api.delete(`/post/${id}`);
@@ -72,9 +86,12 @@ export const deleteNews = async (id) => {
         throw error;
     }
 };
+
+// Talda API calls
+
 export const getAllTalda = async () => {
     try {
-        const response = await api.get('/talda');
+        const response = await api.get('/talda/all'); // Ensure this endpoint is correct
         return response.data;
     } catch (error) {
         console.error('Error fetching talda:', error);
@@ -102,7 +119,6 @@ export const getTaldaById = async (id) => {
     }
 };
 
-
 export const editTalda = async (id, taldaData) => {
     try {
         const response = await api.put(`/talda/${id}`, taldaData);
@@ -122,6 +138,7 @@ export const deleteTalda = async (id) => {
         throw error;
     }
 };
+
 
 
 export default api;

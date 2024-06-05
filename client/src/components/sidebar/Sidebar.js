@@ -21,7 +21,7 @@ const Sidebar = ({ isAdmin }) => {
                 <img src="./icons/ic_round-quiz.svg" alt="" />Suraq - Jauap
               </Link>
                 <Link className="action__item" to="/admin/talda">
-                    <img src="./icons/teenyicons_drag-outline.svg" alt="" />Talda
+                    <img src="./icons/material-symbols_match-word-rounded.svg" alt="" />Talda
                 </Link>
             </>
           ) : (
@@ -29,8 +29,8 @@ const Sidebar = ({ isAdmin }) => {
               <Link className="action__item" to="/home">
                 <img src="./icons/material-symbols_home.svg" alt="" />Home
               </Link>
-              <Link className="action__item" to="/sozdly">
-                <img src="./icons/material-symbols_match-word-rounded.svg" alt="" />Sozdly
+              <Link className="action__item" to="/talda">
+                <img src="./icons/material-symbols_match-word-rounded.svg" alt="" />Talda
               </Link>
               <Link className="action__item" to="/tanda">
                 <img src="./icons/bi_unity.svg" alt="" />Tanda
@@ -41,9 +41,6 @@ const Sidebar = ({ isAdmin }) => {
               <Link className="action__item" to="/suraqJauap">
                 <img src="./icons/ic_round-quiz.svg" alt="" />Suraq - Jauap
               </Link>
-                <Link className="action__item" to="/talda">
-                    <img src="./icons/teenyicons_drag-outline.svg" alt="" />Talda
-                </Link>
             </>
           )}
         </div>

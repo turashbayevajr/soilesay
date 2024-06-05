@@ -1,9 +1,9 @@
-module.exports = (req, res, next) => {
-    const user = req.user; // Assuming req.user is set by your authentication middleware
-
-    if (user && user.isAdmin) {
+const checkAdmin = (req, res, next) => {
+    if (req.user && req.user.isAdmin) {
         next();
     } else {
-        res.status(403).send({ message: 'Forbidden: Admins only' });
+        res.status(403).send({ error: "Access denied. Admins only." });
     }
 };
+
+module.exports = { checkAdmin };

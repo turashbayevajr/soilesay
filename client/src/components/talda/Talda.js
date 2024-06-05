@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Container, Alert } from 'react-bootstrap';
-import axios from 'axios';
-import './Talda.css'; // Ensure you have this CSS file
+import { getUserProfile, getTaldaByLevel, updateTaldaLevel, getCompletedTalda } from '../api';
+import './Talda.css';
 
 const syntacticTypes = [
     { type: 'Бастауыш', lineType: 'solid' },
@@ -17,24 +17,34 @@ const Talda = () => {
     const [underlinedWords, setUnderlinedWords] = useState([]);
     const [correctAnalysis, setCorrectAnalysis] = useState([]);
     const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [taldaLevel, setTaldaLevel] = useState(1);
+    const [completedLevels, setCompletedLevels] = useState([]);
+    const [currentLevel, setCurrentLevel] = useState(1);
+    const [noMoreLevels, setNoMoreLevels] = useState(false);
 
     useEffect(() => {
-        const fetchFirstLevel = async () => {
+        const fetchUserData = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/talda');
-                if (Array.isArray(response.data) && response.data.length > 0) {
-                    const firstLevelData = response.data[0];
-                    setWords(firstLevelData.text.split(' '));
-                    setCorrectAnalysis(firstLevelData.analysis || []);
+                const userData = await getUserProfile();
+                setTaldaLevel(userData.taldaLevel);
+                setCurrentLevel(userData.taldaLevel);
+
+                const taldaData = await getTaldaByLevel(userData.taldaLevel);
+                if (taldaData && taldaData.text) {
+                    setWords(taldaData.text.split(' '));
+                    setCorrectAnalysis(taldaData.analysis || []);
                 } else {
-                    console.error('Unexpected response structure:', response.data);
+                    setFeedbackMessage('Failed to load talda level');
                 }
+
+                const completedData = await getCompletedTalda();
+                setCompletedLevels(completedData);
             } catch (error) {
-                console.error('Error fetching first level:', error);
+                setFeedbackMessage('Failed to fetch user data');
             }
         };
 
-        fetchFirstLevel();
+        fetchUserData();
     }, []);
 
     const handleWordClick = (index) => {
@@ -45,7 +55,7 @@ const Talda = () => {
         }
     };
 
-    const checkAnswers = () => {
+    const checkAnswers = async () => {
         const results = words.map((word, index) => {
             const correctType = correctAnalysis.find(analysis => analysis.word === word)?.type;
             const selectedType = syntacticTypes.find(type => type.lineType === underlinedWords[index])?.type;
@@ -56,14 +66,60 @@ const Talda = () => {
 
         if (allCorrect) {
             setFeedbackMessage('Correct!');
+            try {
+                const response = await updateTaldaLevel(currentLevel);
+                if (response.message === 'No more levels') {
+                    setNoMoreLevels(true);
+                    setFeedbackMessage('');
+                } else if (response.taldaLevel !== taldaLevel) {
+                    setTaldaLevel(response.taldaLevel);
+                    setCurrentLevel(response.taldaLevel);
+                    // Fetch new data for the new level
+                    const taldaData = await getTaldaByLevel(response.taldaLevel);
+                    if (taldaData && taldaData.text) {
+                        setWords(taldaData.text.split(' '));
+                        setCorrectAnalysis(taldaData.analysis || []);
+                        setUnderlinedWords([]);
+                        setNoMoreLevels(false); // New level found, reset no more levels message
+                    } else {
+                        setNoMoreLevels(true); // No new level found, set no more levels message
+                    }
+                    // Update completed levels
+                    const completedData = await getCompletedTalda();
+                    setCompletedLevels(completedData);
+                } else {
+                    setFeedbackMessage('Correct, try the next level.');
+                }
+            } catch (error) {
+                setFeedbackMessage('Error updating talda level');
+            }
         } else {
             setFeedbackMessage('Try again.');
+        }
+    };
+
+    const handleLevelClick = async (level) => {
+        try {
+            const taldaData = await getTaldaByLevel(level);
+            if (taldaData) {
+                setWords(taldaData.text.split(' '));
+                setCorrectAnalysis(taldaData.analysis || []);
+                setUnderlinedWords([]);
+                setFeedbackMessage('');
+                setCurrentLevel(level);
+                setNoMoreLevels(false); // Reset no more levels message when switching levels
+            } else {
+                setFeedbackMessage('Failed to load talda level');
+            }
+        } catch (error) {
+            setFeedbackMessage('Failed to load talda level');
         }
     };
 
     return (
         <Container>
             <h1 className="sozjumbaq__title title">TALDA</h1>
+            <p>Current Level: {taldaLevel}</p>
             <div className="mb-4">
                 {syntacticTypes.map(st => (
                     <Button
@@ -89,10 +145,35 @@ const Talda = () => {
             </div>
             <Button variant="success" className="mt-4" onClick={checkAnswers}>Check</Button>
             {feedbackMessage && (
-                <Alert variant={feedbackMessage === 'Correct!' ? 'success' : 'danger'} className="mt-4">
+                <Alert variant={feedbackMessage === 'Correct!' || feedbackMessage === 'Correct, try the next level.' ? 'success' : 'danger'} className="mt-4">
                     {feedbackMessage}
                 </Alert>
             )}
+            {noMoreLevels && (
+                <Alert variant="info" className="mt-4">
+                    Wow, you've reached the end of our current levels. Congratulations on your achievement. We're grateful for your dedication. We're working on adding new levels, and we'll let you know as soon as they're ready.
+                </Alert>
+            )}
+            <h2 className="mt-4">Levels</h2>
+            <div>
+                {completedLevels.map(level => (
+                    <Button
+                        key={level._id}
+                        variant={level.level === currentLevel ? 'primary' : 'outline-secondary'}
+                        className="m-2"
+                        onClick={() => handleLevelClick(level.level)}
+                    >
+                        Level {level.level}
+                    </Button>
+                ))}
+                <Button
+                    variant={currentLevel === taldaLevel ? 'primary' : 'outline-secondary'}
+                    className="m-2"
+                    onClick={() => handleLevelClick(taldaLevel)}
+                >
+                    Current Level {taldaLevel}
+                </Button>
+            </div>
         </Container>
     );
 };

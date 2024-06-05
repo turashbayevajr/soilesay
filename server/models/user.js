@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String, // URL or path to the avatar image
     default: '' // Default value can be an empty string or a default image URL
+  },
+  taldaLevel: {
+    type: Number,
+    default: 1
   }
 });
 

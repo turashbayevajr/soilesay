@@ -3,11 +3,18 @@
   <component name="ChangeListManager">
     <list default="true" id="2257e3f4-9196-4c4d-98c3-6ee70c3557b7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/admin/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/admin/api.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/authorization/SignUp.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/authorization/SignUp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/sidebar/Sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/sidebar/Sidebar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/talda/Talda.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/talda/Talda.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/middleware/authenticateUser.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/middleware/authenticateUser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/middleware/checkAdmin.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/middleware/checkAdmin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/router/profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/router/profile.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/router/registration.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/router/registration.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/router/talda.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/router/talda.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +62,8 @@
       <workItem from="1716960909767" duration="6788000" />
       <workItem from="1717156958403" duration="1946000" />
       <workItem from="1717234378511" duration="16277000" />
-      <workItem from="1717320660925" duration="25263000" />
+      <workItem from="1717320660925" duration="27270000" />
+      <workItem from="1717485620208" duration="25609000" />
     </task>
     <servers />
   </component>
