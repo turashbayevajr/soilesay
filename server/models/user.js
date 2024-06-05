@@ -26,6 +26,14 @@ const userSchema = new mongoose.Schema({
   taldaLevel: {
     type: Number,
     default: 1
+  },
+  SJLevel: {
+    type: Number,
+    default: 1
+  },
+  maqalLevel: {
+    type: Number,
+    default: 1
   }
 });
 

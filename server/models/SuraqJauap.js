@@ -1,21 +1,43 @@
-const mongoose = require("mongoose");
+// models/SuraqJauap.js
 
-const optionSchema = new mongoose.Schema({
-    text: { type: String, required: true },
-    isCorrect: { type: Boolean, required: true },
+const mongoose = require('mongoose');
+
+const { Schema } = mongoose;
+
+// Define option schema
+const optionSchema = new Schema({
+    text: {
+        type: String,
+        required: true,
+    },
+    isCorrect: {
+        type: Boolean,
+        required: true,
+    },
 });
 
-const questionSchema = new mongoose.Schema({
-    text: { type: String, required: true },
+// Define question schema
+const questionSchema = new Schema({
+    text: {
+        type: String,
+        required: true,
+    },
     options: [optionSchema],
 });
 
-const suraqJauapSchema = new mongoose.Schema({
-    level: { type: Number, required: true, unique: true },
-    passage: { type: String, required: true },
+// Define SuraqJauap schema
+const SuraqJauapSchema = new Schema({
+    text: {
+        type: String,
+        required: true,
+    },
+    level: {
+        type: Number,
+        required: true,
+    },
     questions: [questionSchema],
 });
 
-const SuraqJauap = mongoose.model("SuraqJauap", suraqJauapSchema);
+const SuraqJauap = mongoose.model('SuraqJauap', SuraqJauapSchema);
 
 module.exports = SuraqJauap;

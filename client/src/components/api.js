@@ -143,3 +143,59 @@ export const updateTaldaLevel = async (currentLevel) => {
 };
 
 
+// SuraqJauap API calls
+
+// SuraqJauap API calls
+
+// Get SuraqJauap level by specific level number
+export const getSuraqJauapByLevel = async (level) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/api/profile/sjlevel`, {
+            params: { level: Number(level) },
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        });
+        console.log(`Fetched SuraqJauap data for level ${level}:`, response.data);
+        if (!response.data || !response.data.text) {
+            return { noData: true }; // Indicate no data found for this level
+        }
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching SuraqJauap by level:', error);
+        if (error.response && error.response.status === 404) {
+            return { noData: true }; // Handle 404 error
+        }
+        return { error: true }; // Indicate an error occurred
+    }
+};
+
+// Get all completed SuraqJauap levels for the current user
+export const getCompletedSuraqJauap = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/api/profile/sjcompleted`, {
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching completed SuraqJauap levels:', error);
+        throw error;
+    }
+};
+
+// Update the user's SuraqJauap level
+export const updateSuraqJauapLevel = async (currentLevel) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/api/profile/sjupdateLevel`, { level: Number(currentLevel) }, {
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating SuraqJauap level:', error);
+        return { message: 'Error', suraqJauapLevel: null };
+    }
+};

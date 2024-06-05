@@ -10,7 +10,6 @@ const AdminTalda = () => {
         const fetchTalda = async () => {
             try {
                 const fetchedTalda = await getAllTalda();
-                console.log('Fetched talda:', fetchedTalda);
                 if (Array.isArray(fetchedTalda)) {
                     setTalda(fetchedTalda);
                 } else if (fetchedTalda) {

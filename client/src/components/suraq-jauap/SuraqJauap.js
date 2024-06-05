@@ -1,197 +1,160 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { Button, Container, Alert, Form } from 'react-bootstrap';
+import { getUserProfile, getSuraqJauapByLevel, updateSuraqJauapLevel, getCompletedSuraqJauap } from '../api';
 
-const SuraqJauap = ({ username }) => {
-    const [quizzes, setQuizzes] = useState([]);
+const SuraqJauap = () => {
+    const [levelText, setLevelText] = useState('');
+    const [questions, setQuestions] = useState([]);
+    const [selectedAnswers, setSelectedAnswers] = useState([]);
+    const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [SJLevel, setSJLevel] = useState(1);
+    const [completedLevels, setCompletedLevels] = useState([]);
     const [currentLevel, setCurrentLevel] = useState(1);
-    const [answers, setAnswers] = useState({});
-    const [score, setScore] = useState(0);
-    const [showResults, setShowResults] = useState(false);
-    const [passed, setPassed] = useState(false);
+    const [noMoreLevels, setNoMoreLevels] = useState(false);
 
     useEffect(() => {
-        const fetchQuizzes = async () => {
+        const fetchUserData = async () => {
             try {
-                const response = await fetch("http://localhost:8000/suraqjauap");
-                const data = await response.json();
-                setQuizzes(data);
+                const userData = await getUserProfile();
+                setSJLevel(userData.SJlevel);
+                setCurrentLevel(userData.SJlevel);
+
+                const suraqJauapData = await getSuraqJauapByLevel(userData.SJlevel);
+                if (suraqJauapData && suraqJauapData.text) {
+                    setLevelText(suraqJauapData.text);
+                    setQuestions(suraqJauapData.questions || []);
+                    setSelectedAnswers(new Array(suraqJauapData.questions.length).fill(null));
+                } else {
+                    setFeedbackMessage('Failed to load SuraqJauap level');
+                }
+
+                const completedData = await getCompletedSuraqJauap();
+                setCompletedLevels(completedData);
             } catch (error) {
-                console.error("Failed to fetch quizzes:", error);
+                setFeedbackMessage('Failed to fetch user data');
             }
         };
 
-        fetchQuizzes();
+        fetchUserData();
     }, []);
 
-    useEffect(() => {
-        const fetchProgress = async () => {
+    const handleAnswerChange = (questionIndex, optionIndex) => {
+        const newSelectedAnswers = [...selectedAnswers];
+        newSelectedAnswers[questionIndex] = optionIndex;
+        setSelectedAnswers(newSelectedAnswers);
+    };
+
+    const checkAnswers = async () => {
+        const allCorrect = questions.every((question, index) => {
+            const correctOptionIndex = question.options.findIndex(option => option.isCorrect);
+            return selectedAnswers[index] === correctOptionIndex;
+        });
+
+        if (allCorrect) {
+            setFeedbackMessage('Correct!');
             try {
-                const response = await fetch(`http://localhost:8000/user/progress/${username}`);
-                const data = await response.json();
-                setCurrentLevel(data.currentLevel);
+                const response = await updateSuraqJauapLevel(currentLevel);
+                if (response.message === 'No more levels') {
+                    setNoMoreLevels(true);
+                    setFeedbackMessage('');
+                } else {
+                    const nextLevel = response.SJLevel;
+                    setSJLevel(nextLevel);
+                    setCurrentLevel(nextLevel);
+
+                    const suraqJauapData = await getSuraqJauapByLevel(nextLevel);
+                    if (suraqJauapData && suraqJauapData.text) {
+                        setLevelText(suraqJauapData.text);
+                        setQuestions(suraqJauapData.questions || []);
+                        setSelectedAnswers(new Array(suraqJauapData.questions.length).fill(null));
+                        setNoMoreLevels(false);
+                    } else {
+                        setNoMoreLevels(true);
+                    }
+
+                    const completedData = await getCompletedSuraqJauap();
+                    setCompletedLevels(completedData);
+                }
             } catch (error) {
-                console.error("Failed to fetch user progress:", error);
+                setFeedbackMessage('Error updating SuraqJauap level');
             }
-        };
-
-        fetchProgress();
-    }, [username]);
-
-    const handleAnswerChange = (quizIndex, questionIndex, optionIndex) => {
-        setAnswers({
-            ...answers,
-            [quizIndex]: {
-                ...answers[quizIndex],
-                [questionIndex]: optionIndex,
-            },
-        });
-    };
-
-    const clearAnswer = (quizIndex, questionIndex) => {
-        const newAnswers = { ...answers };
-        if (newAnswers[quizIndex]) {
-            delete newAnswers[quizIndex][questionIndex];
-            if (Object.keys(newAnswers[quizIndex]).length === 0) {
-                delete newAnswers[quizIndex];
-            }
+        } else {
+            setFeedbackMessage('Try again.');
         }
-        setAnswers(newAnswers);
     };
 
-    const handleSubmit = async (e, quizIndex) => {
-        e.preventDefault();
-        const userAnswers = answers[quizIndex] || {};
-        const quiz = quizzes[quizIndex];
-        let correctCount = 0;
-
-        quiz.questions.forEach((question, questionIndex) => {
-            const selectedOptionIndex = userAnswers[questionIndex];
-            const selectedOption = question.options[selectedOptionIndex];
-            if (selectedOption && selectedOption.isCorrect) {
-                correctCount += 1;
-            }
-        });
-
-        const scorePercentage = (correctCount / quiz.questions.length) * 100;
-        setScore(scorePercentage);
-        setShowResults(true);
-        setPassed(scorePercentage >= 70);
-
+    const handleLevelClick = async (level) => {
         try {
-            console.log("Sending progress data:", {
-                username,
-                quizId: quiz._id,
-                level: quiz.level,
-                score: scorePercentage,
-            });
-            const response = await fetch("http://localhost:8000/user/progress", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username,
-                    quizId: quiz._id,
-                    level: quiz.level,
-                    score: scorePercentage,
-                }),
-            });
-
-            const data = await response.json();
-            if (data.passed && data.nextLevel) {
-                setCurrentLevel(data.nextLevel);
-                setShowResults(false); // Reset results to load the new level
-                setAnswers({});
+            const suraqJauapData = await getSuraqJauapByLevel(level);
+            if (suraqJauapData) {
+                setLevelText(suraqJauapData.text);
+                setQuestions(suraqJauapData.questions || []);
+                setSelectedAnswers(new Array(suraqJauapData.questions.length).fill(null));
+                setFeedbackMessage('');
+                setCurrentLevel(level);
+                setNoMoreLevels(false);
+            } else {
+                setFeedbackMessage('Failed to load SuraqJauap level');
             }
         } catch (error) {
-            console.error("Failed to save progress:", error);
+            setFeedbackMessage('Failed to load SuraqJauap level');
         }
     };
 
-    const handleTryAgain = () => {
-        setAnswers({});
-        setShowResults(false);
-    };
-
-    if (!quizzes.length) {
-        return <div>Loading...</div>;
-    }
-
-    const currentQuiz = quizzes.find((quiz) => quiz.level === currentLevel);
-
     return (
-        <div>
-            <h1>Suraq Jauap Quizzes</h1>
-            {currentQuiz ? (
-                <div key={currentQuiz._id} className="quiz-block">
-                    <p>{currentQuiz.passage}</p>
-                    <form onSubmit={(e) => handleSubmit(e, quizzes.indexOf(currentQuiz))}>
-                        {!showResults && currentQuiz.questions.map((question, questionIndex) => (
-                            <div key={questionIndex} className="question-block">
-                                <p>{question.text}</p>
-                                <div className="options">
-                                    {question.options.map((option, optionIndex) => (
-                                        <div key={optionIndex}>
-                                            <label>
-                                                <input
-                                                    type="radio"
-                                                    name={`question-${currentQuiz._id}-${questionIndex}`}
-                                                    value={optionIndex}
-                                                    checked={answers[quizzes.indexOf(currentQuiz)]?.[questionIndex] === optionIndex}
-                                                    onChange={() => handleAnswerChange(quizzes.indexOf(currentQuiz), questionIndex, optionIndex)}
-                                                />
-                                                {option.text}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
-                                {answers[quizzes.indexOf(currentQuiz)]?.[questionIndex] !== undefined && (
-                                    <button
-                                        type="button"
-                                        className="clear-button"
-                                        onClick={() => clearAnswer(quizzes.indexOf(currentQuiz), questionIndex)}
-                                    >
-                                        Clear Selected Answer
-                                    </button>
-                                )}
-                            </div>
+        <Container>
+            <h1 className="title">Suraq Jauap</h1>
+            <p>Current Level: {SJLevel}</p>
+            <div className="level-text mb-4">{levelText}</div>
+            {questions.map((question, qIndex) => (
+                <div key={qIndex} className="mb-4">
+                    <h5> {question.text}</h5>
+                    <Form>
+                        {question.options.map((option, oIndex) => (
+                            <Form.Check
+                                type="radio"
+                                name={`question-${qIndex}`}
+                                key={oIndex}
+                                label={option.text}
+                                checked={selectedAnswers[qIndex] === oIndex}
+                                onChange={() => handleAnswerChange(qIndex, oIndex)}
+                            />
                         ))}
-                        {!showResults && <button type="submit">Submit</button>}
-                    </form>
-                    {showResults && (
-                        <div className="results">
-                            <h2>Results</h2>
-                            <p>Your Score: {score.toFixed(2)}%</p>
-                            {passed ? (
-                                <p>Excellent! Proceeding to next level...</p>
-                            ) : (
-                                <button onClick={handleTryAgain}>Try Again</button>
-                            )}
-                        </div>
-                    )}
+                    </Form>
                 </div>
-            ) : (
-                <p>No available quizzes at this level.</p>
+            ))}
+            <Button variant="success" className="mt-4" onClick={checkAnswers}>Check</Button>
+            {feedbackMessage && (
+                <Alert variant={feedbackMessage === 'Correct!' || feedbackMessage === 'Correct, try the next level.' ? 'success' : 'danger'} className="mt-4">
+                    {feedbackMessage}
+                </Alert>
             )}
-            <div className="levels">
-                <h2>Available Levels</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Level</th>
-                            <th>Passage</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {quizzes.map((quiz) => (
-                            <tr key={quiz._id}>
-                                <td>{quiz.level}</td>
-                                <td>{quiz.passage}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            {noMoreLevels && (
+                <Alert variant="info" className="mt-4">
+                    Wow, you've reached the end of our current levels. Congratulations on your achievement. We're grateful for your dedication. We're working on adding new levels, and we'll let you know as soon as they're ready.
+                </Alert>
+            )}
+            <h2 className="mt-4">Levels</h2>
+            <div>
+                {completedLevels.map(level => (
+                    <Button
+                        key={level._id}
+                        variant={level.level === currentLevel ? 'primary' : 'outline-secondary'}
+                        className="m-2"
+                        onClick={() => handleLevelClick(level.level)}
+                    >
+                        Level {level.level}
+                    </Button>
+                ))}
+                <Button
+                    variant={currentLevel === SJLevel ? 'primary' : 'outline-secondary'}
+                    className="m-2"
+                    onClick={() => handleLevelClick(SJLevel)}
+                >
+                    Current Level {SJLevel}
+                </Button>
             </div>
-        </div>
+        </Container>
     );
 };
 

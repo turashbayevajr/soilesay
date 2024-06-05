@@ -22,6 +22,8 @@ import AdminEditNews from "./components/admin/AdminEditNews";
 import AdminTalda from "./components/admin/AdminTalda";
 import AdminTaldaAdd from "./components/admin/AdminTaldaAdd";
 import AdminTaldaEdit from "./components/admin/AdminTaldaEdit";
+import AdminSJAdd from "./components/admin/AdminSJAdd";
+import AdminSJEdit from "./components/admin/AdminSJEdit"; // Add this import
 import ErrorBoundary from "./components/ErrorBoundary";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -64,14 +66,14 @@ function App() {
                                     <Route path="/sozdly" element={<Sozdly />} />
                                     <Route path="/tanda" element={<Tanda />} />
                                     <Route path="/maqalDrop" element={<MaqalDrop />} />
-                                    <Route path="/suraqJauap" element={<SuraqJauap username={userData.username} currentLevel={userData.currentLevel} />} />
+                                    <Route path="/suraqJauap" element={<SuraqJauap/>} />
                                     <Route path="/talda" element={<Talda />} />
                                     <Route path="/adamzat" element={<Adamzat />} />
                                     <Route path="/profile" element={<Profile />} />
                                     {userData.isAdmin && (
                                         <>
                                             <Route path="/adminMaqalDrop" element={<AdminMaqalDrop username={userData.username} />} />
-                                            <Route path="/adminSuraqJauap" element={<AdminSuraqJauap username={userData.username} />} />
+                                            <Route path="/admin/sj" element={<AdminSuraqJauap username={userData.username} />} />
                                             <Route path="/admin/talda" element={<AdminTalda />} />
                                             <Route path="/admin" element={
                                                 <>
@@ -83,6 +85,8 @@ function App() {
                                             <Route path="/admin/edit/:id" element={<AdminEditNews />} />
                                             <Route path="/admin/talda/add" element={<AdminTaldaAdd />} />
                                             <Route path="/admin/talda/edit/:id" element={<AdminTaldaEdit />} />
+                                            <Route path="/admin/sj/add" element={<AdminSJAdd />} />
+                                            <Route path="/admin/sj/edit/:id" element={<AdminSJEdit />} />
                                         </>
                                     )}
                                 </Routes>

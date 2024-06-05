@@ -5,6 +5,9 @@ const User = require('../models/user');
 const authenticateUser = require('../middleware/authenticateUser');
 const Talda = require('../models/talda');
 const router = express.Router();
+const SuraqJauap = require('../models/SuraqJauap')
+
+
 
 // Set storage engine
 const storage = multer.diskStorage({
@@ -79,7 +82,8 @@ router.get('/', authenticateUser, async (req, res) => {
             username: user.username,
             email: user.email,
             avatar: user.avatar,
-            taldaLevel: user.taldaLevel
+            taldaLevel: user.taldaLevel,
+            SJlevel: user.SJLevel
         });
     } catch (error) {
         res.status(500).json({ msg: "An error occurred while retrieving the profile" });
@@ -151,6 +155,81 @@ router.get('/completed', authenticateUser, async (req, res) => {
         res.json(levels);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching completed levels' });
+    }
+});
+
+//SuraqJauap
+
+// Get specific SuraqJauap level for the current user
+
+router.get('/sjcurrent', authenticateUser, async (req, res) => {
+    try {
+        const user = req.user;
+        const sj = await SuraqJauap.findOne({ level: user.SJLevel });
+        if (!sj) {
+            return res.status(404).json({ message: 'Current SuraqJauap level not found' });
+        }
+        res.json(sj);
+    } catch (error) {
+        console.error('Error fetching current SuraqJauap level:', error);
+        res.status(500).json({ message: "Error fetching current SuraqJauap level" });
+    }
+});
+
+// Get specific SuraqJauap level for the current user
+router.get('/sjlevel', authenticateUser, async (req, res) => {
+    const level = parseInt(req.query.level, 10);
+    if (isNaN(level)) {
+        return res.status(400).json({ message: 'Invalid level parameter' });
+    }
+
+    try {
+        const sj = await SuraqJauap.findOne({ level: level });
+        if (!sj) {
+            return res.status(404).json({ message: 'Level not found' });
+        }
+        res.json(sj);
+    } catch (error) {
+        console.error('Error fetching SuraqJauap level:', error);
+        res.status(500).json({ message: 'Error fetching SuraqJauap level' });
+    }
+});
+
+// Get all completed SuraqJauap levels for the current user
+router.get('/sjcompleted', authenticateUser, async (req, res) => {
+    try {
+        const user = req.user;
+        const levels = await SuraqJauap.find({ level: { $lte: user.SJLevel } }).sort({ level: -1 });
+        res.json(levels);
+    } catch (error) {
+        console.error('Error fetching completed SuraqJauap levels:', error);
+        res.status(500).json({ message: 'Error fetching completed SuraqJauap levels' });
+    }
+});
+
+// Update the user's SuraqJauap level
+router.post('/sjupdateLevel', authenticateUser, async (req, res) => {
+    try {
+        const user = req.user;
+        const { level } = req.body;
+
+        if (level !== user.SJLevel) {
+            return res.json({ message: 'You can only advance from your current highest level', SJLevel: user.SJLevel });
+        }
+
+        const nextLevel = user.SJLevel + 1;
+        const nextLevelExists = await SuraqJauap.exists({ level: nextLevel });
+
+        if (!nextLevelExists) {
+            return res.json({ message: 'No more levels', SJLevel: user.SJLevel });
+        }
+
+        user.SJLevel = nextLevel;
+        await user.save();
+        res.json({ SJLevel: user.SJLevel });
+    } catch (error) {
+        console.error('Error updating SuraqJauap level:', error);
+        res.status(500).json({ message: 'Error updating SuraqJauap level', error: error.message });
     }
 });
 

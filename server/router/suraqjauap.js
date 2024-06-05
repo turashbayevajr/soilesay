@@ -1,45 +1,81 @@
 const express = require("express");
+const router = express.Router();
+const authenticateUser = require("../middleware/authenticateUser");
+const { checkAdmin } = require("../middleware/checkAdmin");
 const SuraqJauap = require("../models/SuraqJauap");
 
-const router = express.Router();
-
-// Route to handle quiz submission
-router.post("/admin/suraqjauap", async (req, res) => {
-    const { passage, questions } = req.body;
-
+// Get levels for the current user
+router.get("/", authenticateUser, async (req, res) => {
     try {
-        // Get the current highest level
-        const highestLevelQuiz = await SuraqJauap.findOne().sort({ level: -1 });
-        const nextLevel = highestLevelQuiz ? highestLevelQuiz.level + 1 : 1;
-
-        const newQuiz = new SuraqJauap({
-            level: nextLevel,
-            passage,
-            questions: questions.map((question) => ({
-                text: question.text,
-                options: question.options.map((option, index) => ({
-                    text: option,
-                    isCorrect: question.correctOption === index,
-                })),
-            })),
-        });
-
-        await newQuiz.save();
-        res.status(201).json({ message: "Quiz created successfully!", level: nextLevel });
+        const user = req.user;  // Assume user is attached to req in authenticateUser middleware
+        // Fetch levels based on user progress
+        const levels = await SuraqJauap.find({ level: { $lte: user.currentLevel } }).sort({ level: -1 });
+        res.json(levels);
     } catch (error) {
-        console.error("Error creating quiz:", error);
-        res.status(500).json({ message: "Failed to create quiz", error: error.message });
+        res.status(500).json({ message: "Error fetching levels" });
     }
 });
 
-// Route to fetch all quizzes
-router.get("/suraqjauap", async (req, res) => {
+// Create a new level (admin)
+router.post("/", authenticateUser, checkAdmin, async (req, res) => {
     try {
-        const quizzes = await SuraqJauap.find();
-        res.status(200).json(quizzes);
+        const { text, level, questions } = req.body;
+        const newSuraqJauap = new SuraqJauap({ text, level, questions });
+        const savedSuraqJauap = await newSuraqJauap.save();
+        res.status(201).json(savedSuraqJauap);
     } catch (error) {
-        res.status(500).json({ message: "Failed to fetch quizzes", error });
+        res.status(400).json({ message: "Error creating level" });
     }
 });
 
+// Get all levels (admin)
+router.get("/all", authenticateUser, checkAdmin, async (req, res) => {
+    try {
+        const levels = await SuraqJauap.find().sort({ level: -1 });
+        res.json(levels);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching levels" });
+    }
+});
+
+// Update a level (admin)
+router.put("/:id", authenticateUser, checkAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { text, level, questions } = req.body;
+        const updatedSuraqJauap = await SuraqJauap.findByIdAndUpdate(id, { text, level, questions }, { new: true });
+        if (!updatedSuraqJauap) {
+            return res.status(404).json({ message: "Level not found" });
+        }
+        res.json(updatedSuraqJauap);
+    } catch (error) {
+        res.status(400).json({ message: "Error updating level" });
+    }
+});
+
+// Delete a level (admin)
+router.delete("/:id", authenticateUser, checkAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedSuraqJauap = await SuraqJauap.findByIdAndDelete(id);
+        if (!deletedSuraqJauap) {
+            return res.status(404).json({ message: "Level not found" });
+        }
+        res.json({ message: "Level deleted successfully" });
+    } catch (error) {
+        res.status(400).json({ message: "Error deleting level" });
+    }
+});
+router.get("/:id", authenticateUser, checkAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const suraqJauap = await SuraqJauap.findById(id);
+        if (!suraqJauap) {
+            return res.status(404).json({ message: "Level not found" });
+        }
+        res.json(suraqJauap);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching level" });
+    }
+});
 module.exports = router;

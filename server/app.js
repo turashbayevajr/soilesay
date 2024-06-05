@@ -16,12 +16,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/", registrationRouter);
-app.use("/", suraqJauapRouter);
 app.use("/", userProgressRouter);
 app.use("/api/maqal", maqalDropRouter);
 app.use("/api/post", newsRouter);
 app.use("/api/profile", profileRouter);
 app.use("/api/talda", taldaRouter);
+app.use("/api/sj", suraqJauapRouter);
 
 app.use('/uploads', express.static('uploads'));
 
