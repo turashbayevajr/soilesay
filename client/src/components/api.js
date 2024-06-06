@@ -38,8 +38,6 @@ export const signUp = async (username, email, password) => {
     }
 };
 
-// User Profile
-
 export const getUserProfile = async () => {
     try {
         const token = getToken(); // Get the token from localStorage

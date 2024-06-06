@@ -35,10 +35,9 @@ function checkFileType(file, cb) {
     if (mimetype && extname) {
         return cb(null, true);
     } else {
-        cb('Error: Images Only!');
+        cb('Error: Incorrect media type. Images only!');
     }
 }
-
 // Route to handle profile update
 router.post('/updateProfile', authenticateUser, (req, res) => {
     upload(req, res, async (err) => {
@@ -83,7 +82,8 @@ router.get('/', authenticateUser, async (req, res) => {
             email: user.email,
             avatar: user.avatar,
             taldaLevel: user.taldaLevel,
-            SJlevel: user.SJLevel
+            SJlevel: user.SJLevel,
+            maqalLevel: user.maqalLevel
         });
     } catch (error) {
         res.status(500).json({ msg: "An error occurred while retrieving the profile" });

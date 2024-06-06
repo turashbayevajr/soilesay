@@ -2,21 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2257e3f4-9196-4c4d-98c3-6ee70c3557b7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/client/src/components/admin/AdminSJAdd.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/components/admin/AdminSJEdit.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/components/account/Account.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/admin/AdminSuraqJauap.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/admin/AdminSuraqJauap.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/admin/AdminTalda.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/admin/AdminTalda.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/admin/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/admin/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/account/Account.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/account/Account.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/account/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/account/Profile.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/sidebar/Sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/sidebar/Sidebar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/suraq-jauap/SuraqJauap.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/suraq-jauap/SuraqJauap.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/SuraqJauap.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/SuraqJauap.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/user.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/router/profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/router/profile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/router/suraqjauap.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/router/suraqjauap.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,8 +17,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="CSS File" />
         <option value="JavaScript File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -65,7 +56,8 @@
       <workItem from="1717156958403" duration="1946000" />
       <workItem from="1717234378511" duration="16277000" />
       <workItem from="1717320660925" duration="27270000" />
-      <workItem from="1717485620208" duration="37512000" />
+      <workItem from="1717485620208" duration="37868000" />
+      <workItem from="1717684374565" duration="2525000" />
     </task>
     <servers />
   </component>
