@@ -30,7 +30,12 @@ const AdminPage = () => {
     return (
         <Container>
             <h2 className="my-4">Admin Page</h2>
-            <Link to="/admin/add" className="btn btn-primary mb-4">Add News</Link>
+            <div className="mb-4">
+                <Link to="/admin/add" className="btn btn-primary mr-2">Add News</Link>
+                <Link to="/adminMaqalDrop" className="btn btn-secondary mr-2">Maqal Drop</Link>
+                <Link to="/admin/sj" className="btn btn-secondary mr-2">Suraq - Jauap</Link>
+                <Link to="/admin/talda" className="btn btn-secondary">Talda</Link>
+            </div>
             <Row>
                 {posts.map(post => (
                     <Col key={post._id} md={4} className="mb-4">
